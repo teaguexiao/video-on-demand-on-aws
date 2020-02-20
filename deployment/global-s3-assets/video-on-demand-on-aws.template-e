@@ -64,8 +64,8 @@ Metadata:
 Mappings:
   SourceCode:
     General:
-      S3Bucket: CODEBUCKET
-      KeyPrefix: SOLUTION_NAME/CODEVERSION
+      S3Bucket: vod
+      KeyPrefix: video-on-demand/CODEVERSION
 
   AnonymousData:
     SendAnonymousData:

@@ -133,9 +133,10 @@ let GetEndpoints = async (config) => {
     const mediaconvert = new AWS.MediaConvert();
     let responseData;
     try {
-        let data = await mediaconvert.describeEndpoints().promise();
+        // let data = await mediaconvert.describeEndpoints().promise();
         responseData = {
-            EndpointUrl: data.Endpoints[0].Url
+            //EndpointUrl: data.Endpoints[0].Url
+            EndpointUrl: 'subscribe.mediaconvert.cn-northwest-1.amazonaws.com.cn'
         };
     } catch (err) {
         throw err;
@@ -146,7 +147,8 @@ let GetEndpoints = async (config) => {
 
 let CreateTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
-        endpoint: config.EndPoint,
+        //endpoint: config.EndPoint,
+        endpoint: 'https://7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn'
         region: process.env.AWS_REGION
     });
 
@@ -204,7 +206,8 @@ let CreateTemplates = async (config) => {
 //Feature/so-vod-176 Support for stack update
 let UpdateTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
-        endpoint: config.EndPoint,
+        //endpoint: config.EndPoint,
+        endpoint: 'https://7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn'
         region: process.env.AWS_REGION
     });
 
@@ -239,7 +242,8 @@ let UpdateTemplates = async (config) => {
 //deleting on a stack delte
 let DeleteTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
-        endpoint: config.EndPoint,
+        //endpoint: config.EndPoint,
+        endpoint: 'https://7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn'
         region: process.env.AWS_REGION
     });
 
