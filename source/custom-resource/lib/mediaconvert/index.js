@@ -148,7 +148,7 @@ let GetEndpoints = async (config) => {
 let CreateTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
         //endpoint: config.EndPoint,
-        endpoint: 'https://7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn'
+        endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
         region: process.env.AWS_REGION
     });
 
@@ -207,7 +207,7 @@ let CreateTemplates = async (config) => {
 let UpdateTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
         //endpoint: config.EndPoint,
-        endpoint: 'https://7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn'
+        endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
         region: process.env.AWS_REGION
     });
 
@@ -243,7 +243,7 @@ let UpdateTemplates = async (config) => {
 let DeleteTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
         //endpoint: config.EndPoint,
-        endpoint: 'https://7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn'
+        endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
         region: process.env.AWS_REGION
     });
 
