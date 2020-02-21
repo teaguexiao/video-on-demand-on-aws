@@ -64,8 +64,8 @@ Metadata:
 Mappings:
   SourceCode:
     General:
-      S3Bucket: vod
-      KeyPrefix: video-on-demand/v1.07
+      S3Bucket: video-on-demand
+      KeyPrefix: vod/v1.07
 
   AnonymousData:
     SendAnonymousData:
