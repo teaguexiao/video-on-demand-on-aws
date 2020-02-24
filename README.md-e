@@ -1,3 +1,23 @@
+For AWS China region, we cannot use the cloudformation stack straght-forward, this is because in AWS China the service endpoints are different, and there are some features not available in China region (for example OAI, CloudFront Class, etc.).
+
+Thus I rewrote some of the code to make this template useable in China region. As MediaConvert service is only available in Ningxia region and not Beijing region, so this template only works for Ningxia region. And as there's no MediaPackage service in both China region, so we can only use v4.3 of the original tempalte, not the latest one v5.0.
+
+Some prerequisites before lauching the stack:
+- Make sure your domain name in your AWS account is ICP regulated, otherwise error will happen for S3 and CloudFront.
+
+For deployment:
+ - upload template in the console, input below URL:
+   https://video-on-demand-cn-northwest-1.s3.cn-northwest-1.amazonaws.com.cn/vod/v1.07/video-on-demand-on-aws.template
+
+
+After deployment, you will have to make some manualy change (These will be fixed in future update of this repo)
+- Locate lambda function "STACKNAME-encode", change the environment variable "Endpoint" to "7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn"
+- Because there's no OAI function for cloudfront in China region, you have to add ACL on S3 bucket to prevent others accessing your S3 objects directly.
+- You cannot use native CDN URL (xxxx.cloudfront.cn) directly because of regulation limit, you have to upload your certificate and configure cloudfront to use your own domain name.
+
+
+----
+
 # Video on Demand on AWS
 
 How to implement a video-on-demand workflow on AWS leveraging AWS Step Functions and AWS Elemental MediaConvert. Source code for the AWS solution [Video on Demand on AWS](https://aws.amazon.com/answers/media-entertainment/video-on-demand-on-aws/).

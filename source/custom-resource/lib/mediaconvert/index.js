@@ -15,6 +15,7 @@
 ********************************************************************************/
 const fs = require('fs');
 const AWS = require('aws-sdk');
+let EndpointURL;
 
 //Feature/so-vod-173 QVBR versions of the default system presets.
 const qvbrPresets = [{
@@ -130,25 +131,42 @@ const cbrTemplates = [{
 
 // Get the Account regional MediaConvert endpoint for making API calls
 let GetEndpoints = async (config) => {
-    const mediaconvert = new AWS.MediaConvert();
+    //const mediaconvert = new AWS.MediaConvert();
+
+    //rewrite mediaconvert endpoint for china region (Ningxia region), so the function will return the account specific MediaConvert endpoint.
+    const mediaconvert = new AWS.MediaConvert({endpoint: 'subscribe.mediaconvert.cn-northwest-1.amazonaws.com.cn'});
     let responseData;
     try {
-        // let data = await mediaconvert.describeEndpoints().promise();
+        let data = await mediaconvert.describeEndpoints().promise();
         responseData = {
-            //EndpointUrl: data.Endpoints[0].Url
-            EndpointUrl: 'subscribe.mediaconvert.cn-northwest-1.amazonaws.com.cn'
+            //Rewrite service endpoint url for China region
+            EndpointUrl: data.Endpoints[0].Url.slice(8)
+            //EndpointUrl: 'subscribe.mediaconvert.cn-northwest-1.amazonaws.com.cn'
         };
+        EndpointURL = data.Endpoints[0].Url.slice(8)
     } catch (err) {
         throw err;
     }
     return responseData;
 };
 
+let GetEndpointsURL = async (config) => {
+    const mediaconvert = new AWS.MediaConvert({endpoint: 'subscribe.mediaconvert.cn-northwest-1.amazonaws.com.cn'});
+    let responseData;
+    try {
+        let data = await mediaconvert.describeEndpoints().promise();
+        responseData = EndpointUrl: data.Endpoints[0].Url.slice(8);
+    } catch (err) {
+        throw err;
+    }
+    return responseData;
+};
 
 let CreateTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
         //endpoint: config.EndPoint,
-        endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
+        //endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
+        endpoint: GetEndpointsURL(),
         region: process.env.AWS_REGION
     });
 
@@ -207,7 +225,8 @@ let CreateTemplates = async (config) => {
 let UpdateTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
         //endpoint: config.EndPoint,
-        endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
+        //endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
+        endpoint: GetEndpointsURL(),
         region: process.env.AWS_REGION
     });
 
@@ -243,7 +262,8 @@ let UpdateTemplates = async (config) => {
 let DeleteTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
         //endpoint: config.EndPoint,
-        endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
+        //endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
+        endpoint: GetEndpointsURL(),
         region: process.env.AWS_REGION
     });
 
