@@ -15,7 +15,6 @@
 ********************************************************************************/
 const fs = require('fs');
 const AWS = require('aws-sdk');
-let EndpointURL;
 
 //Feature/so-vod-173 QVBR versions of the default system presets.
 const qvbrPresets = [{
@@ -139,23 +138,8 @@ let GetEndpoints = async (config) => {
     try {
         let data = await mediaconvert.describeEndpoints().promise();
         responseData = {
-            //Rewrite service endpoint url for China region
-            EndpointUrl: data.Endpoints[0].Url.slice(8)
-            //EndpointUrl: 'subscribe.mediaconvert.cn-northwest-1.amazonaws.com.cn'
+            EndpointUrl: data.Endpoints[0].Url
         };
-        EndpointURL = data.Endpoints[0].Url.slice(8)
-    } catch (err) {
-        throw err;
-    }
-    return responseData;
-};
-
-let GetEndpointsURL = async (config) => {
-    const mediaconvert = new AWS.MediaConvert({endpoint: 'subscribe.mediaconvert.cn-northwest-1.amazonaws.com.cn'});
-    let responseData;
-    try {
-        let data = await mediaconvert.describeEndpoints().promise();
-        responseData = EndpointUrl: data.Endpoints[0].Url.slice(8);
     } catch (err) {
         throw err;
     }
@@ -164,9 +148,9 @@ let GetEndpointsURL = async (config) => {
 
 let CreateTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
-        //endpoint: config.EndPoint,
+        endpoint: config.EndPoint,
         //endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
-        endpoint: GetEndpointsURL(),
+        //endpoint: GetEndpointsURL(),
         region: process.env.AWS_REGION
     });
 
@@ -224,9 +208,9 @@ let CreateTemplates = async (config) => {
 //Feature/so-vod-176 Support for stack update
 let UpdateTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
-        //endpoint: config.EndPoint,
+        endpoint: config.EndPoint,
         //endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
-        endpoint: GetEndpointsURL(),
+        //endpoint: GetEndpointsURL(),
         region: process.env.AWS_REGION
     });
 
@@ -261,9 +245,9 @@ let UpdateTemplates = async (config) => {
 //deleting on a stack delte
 let DeleteTemplates = async (config) => {
     const mediaconvert = new AWS.MediaConvert({
-        //endpoint: config.EndPoint,
+        endpoint: config.EndPoint,
         //endpoint: '7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn',
-        endpoint: GetEndpointsURL(),
+        //endpoint: GetEndpointsURL(),
         region: process.env.AWS_REGION
     });
 
