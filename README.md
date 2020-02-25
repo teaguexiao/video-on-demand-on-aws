@@ -4,22 +4,50 @@ For AWS China region, we cannot use the cloudformation stack straght-forward, th
 
 Thus I rewrote some of the code to make this template useable in China region. As MediaConvert service is only available in Ningxia region and not Beijing region, so this template only works for Ningxia region. And as there's no MediaPackage service in both China region, so we can only use v4.3 of the original tempalte, not the latest one v5.0.
 
-## Pre-Deploypent/部署之前：
+## Pre-Deploypent /部署之前：
 
 Some prerequisites before lauching the stack:
-- Make sure your domain name in your AWS account is ICP regulated, otherwise error will happen for S3 and CloudFront/请保证你的AWS账号内的域名已经做了ICP备案，否则Stack内的S3和CloudFront都无法提供互联网访问.
+- Make sure your domain name in your AWS account is ICP regulated, otherwise error will happen for S3 and CloudFront /请保证你的AWS账号内的域名已经做了ICP备案，否则Stack内的S3和CloudFront都无法提供互联网访问.
 
-## For deployment/部署方法:
+## For deployment /部署方法:
 
- - upload template in the console, input below URL/在控制台的Cloudformation中填入以下template的地址:
+ - upload template in the console, input below URL /在控制台的Cloudformation中填入以下template的地址:
    https://video-on-demand-cn-northwest-1.s3.cn-northwest-1.amazonaws.com.cn/vod/v1.19/video-on-demand-on-aws.template
 
 
-## Post-deployment/部署之后：
+## Post-deployment /部署之后：
 
-You will have to make some manualy change (These will be fixed in future update of this repo)/在部署之后，需要对以下部分做一些手动调整（这些操作在未来的更新会集成到teamplate里面，就不需要手动操作了）
-- Because there's no OAI function for cloudfront in China region, you have to add ACL on S3 bucket to prevent others accessing your S3 objects directly./因为国内的CloudFront没有OAI这个功能，因此S3存储桶需要做成公开的桶，并且通过ACL来拒绝最终用户直接访问，而只能让CloudFront访问。
-- You cannot use native CDN URL (xxxx.cloudfront.cn) directly because of regulation limit, you have to upload your certificate and configure cloudfront to use your own domain name./在AWS中国区，我们不能直接用CloudFront的URL（xxxx.cloudfront.cn），需要用自己已经做好ICP备案的域名绑定到CloudFront上。
+You will have to make some manualy change (These will be fixed in future update of this repo) /在部署之后，需要对以下部分做一些手动调整（这些操作在未来的更新会集成到teamplate里面，就不需要手动操作了）
+
+- Because there's no OAI function for cloudfront in China region, you have to add ACL on S3 bucket to prevent others accessing your S3 objects directly. /因为国内的CloudFront没有OAI这个功能，因此S3存储桶需要做成公开的桶，并且通过ACL来拒绝最终用户直接访问，而只能让CloudFront访问。
+
+Steps to add ACL for S3 /在S3上添加相应ACL的步骤：
+1. Navigate to your S3 bucket STACKNAME-destination-xxxxxx, while STACKNAME is the name input when creating the stack  /进入S3存储桶，名字是STACKNAME-destination-xxxxxx，STACKNAME是创建STACK的时候给的名字
+2. Go to Previlege -> Bucket Policy -> add below policy, replace STACKNAME-destination-xxxxxx to your real bucket name. /到权限-桶策略-添加以下桶策略，需要替换STACKNAME-destination-xxxxxx为你真实的桶名字。
+```
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1558244729384",
+    "Statement": [
+        {
+            "Sid": "Stmt1558244725299",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws-cn:s3:::STACKNAME-destination-xxxxxx/*",
+            "Condition": {
+                "IpAddress": {
+                    "aws:SourceIp": "52.82.128.0/19"
+                }
+            }
+        }
+    ]
+}
+```
+3. Save and you are good to go. /保存配置，就可以了。
+
+
+- You cannot use native CDN URL (xxxx.cloudfront.cn) directly because of regulation limit, you have to upload your certificate and configure cloudfront to use your own domain name. You can refer to this [link](https://docs.aws.amazon.com/zh_cn/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html) for setting up your custom domain. Be aware that as ACM (Amazon Certificate Manager) is not available yet in China region, you have to upload your certificagte to IAM and refer the certificate in the cloudfront setting. /在AWS中国区，我们不能直接用CloudFront的URL（xxxx.cloudfront.cn），需要用自己已经做好ICP备案的域名绑定到CloudFront上。可以参照[这个链接](https://docs.aws.amazon.com/zh_cn/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html)来做配置。需要注意的是，因为目前国内区域还没有ACM(Amazon Certificate Manager) 这个服务，所以需要自己到第三方申请SSL证书并且通过IAM上传到AWS，然后在CloudFront配置的时候引用这个证书文件。
 
 
 ----
