@@ -1,19 +1,25 @@
+在AWS中国区，我们无法直接部署Video-on-demand方案的CloudFormation模版，因为中国区和海外区很多服务不一样，比如服务的endpoint不同，很多服务的缺失（CloudFront OAI，Cloudfront价格类别，等等）。因此我对这个Stack的模版做了一些更改，让这个模版可以直接在AWS中国区（目前是宁夏区）使用，而不需要一个一个服务自己搭建。因为国内AWS还没有MediaPackage这个服务，因此只能用这个模版的v4.3版本，不能使用最新的v5.0版本。
+
 For AWS China region, we cannot use the cloudformation stack straght-forward, this is because in AWS China the service endpoints are different, and there are some features not available in China region (for example OAI, CloudFront Class, etc.).
 
 Thus I rewrote some of the code to make this template useable in China region. As MediaConvert service is only available in Ningxia region and not Beijing region, so this template only works for Ningxia region. And as there's no MediaPackage service in both China region, so we can only use v4.3 of the original tempalte, not the latest one v5.0.
 
+## Pre-Deploypent/部署之前：
+
 Some prerequisites before lauching the stack:
-- Make sure your domain name in your AWS account is ICP regulated, otherwise error will happen for S3 and CloudFront.
+- Make sure your domain name in your AWS account is ICP regulated, otherwise error will happen for S3 and CloudFront/请保证你的AWS账号内的域名已经做了ICP备案，否则Stack内的S3和CloudFront都无法提供互联网访问.
 
-For deployment:
- - upload template in the console, input below URL:
-   https://video-on-demand-cn-northwest-1.s3.cn-northwest-1.amazonaws.com.cn/vod/v1.07/video-on-demand-on-aws.template
+## For deployment/部署方法:
+
+ - upload template in the console, input below URL/在控制台的Cloudformation中填入以下template的地址:
+   https://video-on-demand-cn-northwest-1.s3.cn-northwest-1.amazonaws.com.cn/vod/v1.19/video-on-demand-on-aws.template
 
 
-After deployment, you will have to make some manualy change (These will be fixed in future update of this repo)
-- Locate lambda function "STACKNAME-encode", change the environment variable "Endpoint" to "7sq4jhzpb.mediaconvert.cn-northwest-1.amazonaws.com.cn"
-- Because there's no OAI function for cloudfront in China region, you have to add ACL on S3 bucket to prevent others accessing your S3 objects directly.
-- You cannot use native CDN URL (xxxx.cloudfront.cn) directly because of regulation limit, you have to upload your certificate and configure cloudfront to use your own domain name.
+## Post-deployment/部署之后：
+
+You will have to make some manualy change (These will be fixed in future update of this repo)/在部署之后，需要对以下部分做一些手动调整（这些操作在未来的更新会集成到teamplate里面，就不需要手动操作了）
+- Because there's no OAI function for cloudfront in China region, you have to add ACL on S3 bucket to prevent others accessing your S3 objects directly./因为国内的CloudFront没有OAI这个功能，因此S3存储桶需要做成公开的桶，并且通过ACL来拒绝最终用户直接访问，而只能让CloudFront访问。
+- You cannot use native CDN URL (xxxx.cloudfront.cn) directly because of regulation limit, you have to upload your certificate and configure cloudfront to use your own domain name./在AWS中国区，我们不能直接用CloudFront的URL（xxxx.cloudfront.cn），需要用自己已经做好ICP备案的域名绑定到CloudFront上。
 
 
 ----
